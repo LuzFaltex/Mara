@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{5095E260-6923-41C6-9DF8-A395F2EE275C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Runtime", "Mara.Runtime\Mara.Runtime.csproj", "{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Plugins.Core", "Plugins\Mara.Plugins.Core\Mara.Plugins.Core.csproj", "{9B5BAB08-4F92-420B-B45E-149B566664A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Common", "Mara.Common\Mara.Common.csproj", "{F0E906C4-5187-48A6-864E-B526AA2FDB9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Plugins.Mediator", "Plugins\Mara.Plugins.MediatR\Mara.Plugins.Mediator.csproj", "{189647A0-1828-4640-9504-C70AB7971370}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Plugins.BetterEmbeds", "Plugins\Mara.Plugins.BetterEmbed\Mara.Plugins.BetterEmbeds.csproj", "{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{39EA8E1A-E1D9-419D-AF42-860058C74536}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B5BAB08-4F92-420B-B45E-149B566664A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B5BAB08-4F92-420B-B45E-149B566664A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B5BAB08-4F92-420B-B45E-149B566664A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B5BAB08-4F92-420B-B45E-149B566664A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0E906C4-5187-48A6-864E-B526AA2FDB9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0E906C4-5187-48A6-864E-B526AA2FDB9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0E906C4-5187-48A6-864E-B526AA2FDB9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0E906C4-5187-48A6-864E-B526AA2FDB9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{189647A0-1828-4640-9504-C70AB7971370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{189647A0-1828-4640-9504-C70AB7971370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{189647A0-1828-4640-9504-C70AB7971370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{189647A0-1828-4640-9504-C70AB7971370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B5BAB08-4F92-420B-B45E-149B566664A7} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{189647A0-1828-4640-9504-C70AB7971370} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F5007AB-7A59-4CAF-B60F-5FA522B11A6C}
+	EndGlobalSection
+EndGlobal
