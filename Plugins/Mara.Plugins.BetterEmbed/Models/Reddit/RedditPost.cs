@@ -15,14 +15,14 @@ namespace Mara.Plugins.BetterEmbeds.Models.Reddit
         [property: JsonPropertyName("selftext")] Optional<string> Text,
         [property: JsonPropertyName("score")] int Score,
         [property: JsonPropertyName("upvote_ratio")] double UpvoteRatio,
-        [property: JsonPropertyName("created"), JsonConverter(typeof(UtcTimestampConverter))] DateTime PostDate,
+        [property: JsonPropertyName("created"), JsonConverter(typeof(UtcTimestampDateTimeConverter))] DateTime PostDate,
         [property: JsonPropertyName("link_flair_text")] Optional<string> PostFlair,
         [property: JsonPropertyName("media")] Optional<Media> Media,
         [property: JsonPropertyName("is_video")] bool IsVideo,
         [property: JsonPropertyName("post_hint")] Optional<string> PostHint,
         [property: JsonPropertyName("whitelist_status")] string WhitelistStatus,
         [property: JsonPropertyName("thumbnail")] string Thumbnail,
-        [property: JsonPropertyName("thumbnail_width")] int ThumbnailWidth,
-        [property: JsonPropertyName("thumbnail_height")] int ThumbnailHeight
+        [property: JsonPropertyName("thumbnail_width")] Optional<int?> ThumbnailWidth,
+        [property: JsonPropertyName("thumbnail_height")] Optional<int?> ThumbnailHeight
     ) : IRedditPost;
 }

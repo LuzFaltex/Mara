@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Mara.Plugins.Mediator</name>
+    </assembly>
+    <members>
+        <member name="P:Mara.Plugins.Mediator.MediatorPlugin.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Mara.Plugins.Mediator.MediatorPlugin.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:Mara.Plugins.Mediator.MediatorPlugin.Description">
+            <inheritdoc />
+        </member>
+        <member name="M:Mara.Plugins.Mediator.MediatorPlugin.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

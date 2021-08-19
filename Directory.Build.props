@@ -4,4 +4,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>Mara Contributors</Authors>
+    <Company>LuzFaltex</Company>
+    <Copyright>Copyright LuzFaltex © $([System.DateTime]::Now.Year.ToString()). All rights reserved.</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>..\output\$(Configuration)\$(MSBuildProjectName).xml</DocumentationFile>
+    <OutputPath>..\output\$(Configuration)\</OutputPath>
+  </PropertyGroup>
+
+
 </Project>

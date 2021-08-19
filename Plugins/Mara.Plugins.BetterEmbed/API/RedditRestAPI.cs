@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mara.Common.Extensions;
 using Mara.Plugins.BetterEmbeds.Models.Reddit;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Remora.Discord.Rest.Results;
 using Remora.Results;
 
@@ -16,9 +18,13 @@ namespace Mara.Plugins.BetterEmbeds.API
         private const string ProfileUrl = "https://www.reddit.com/user/{0}/about.json";
 
         private readonly HttpClient _client;
-
-        public RedditRestAPI(IHttpClientFactory factory)
+        private readonly JsonSerializerOptions _serializerOptions;
+        private readonly ILogger<RedditRestAPI> _logger;
+            
+        public RedditRestAPI(IHttpClientFactory factory, IOptions<JsonSerializerOptions> serializerOptions, ILogger<RedditRestAPI> logger)
         {
+            _logger = logger;
+            _serializerOptions = serializerOptions.Value;
             _client = factory.CreateClient();
         }
 
@@ -41,7 +47,7 @@ namespace Mara.Plugins.BetterEmbeds.API
 
             var response = await _client.GetAsync(redditUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 
-            return await UnpackResponseAsync<RedditPost>(response, string.Empty, allowNullReturn, cancellationToken);
+            return await UnpackResponseAsync<RedditPost>(response, "$[0].data.children[0].data", allowNullReturn, cancellationToken);
         }
 
         public async Task<Result<RedditUser>> GetRedditUserAsync
@@ -107,7 +113,9 @@ namespace Mara.Plugins.BetterEmbeds.API
                         : throw new InvalidOperationException("Response content null, but null returns not allowed.");
                 }
 
-                entity = element.Value.ToObject<TEntity>();
+                _logger.LogTrace(element.Value.GetRawText());
+
+                entity = element.Value.ToObject<TEntity>(_serializerOptions);
             }
 
             if (entity is not null)

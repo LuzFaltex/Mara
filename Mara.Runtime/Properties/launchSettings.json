@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Mara.Runtime": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

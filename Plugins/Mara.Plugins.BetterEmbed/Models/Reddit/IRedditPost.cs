@@ -25,7 +25,7 @@ namespace Mara.Plugins.BetterEmbeds.Models.Reddit
         public Optional<string> PostHint { get; }
         public string WhitelistStatus { get; }
         public string Thumbnail { get; }
-        public int ThumbnailWidth { get; }
-        public int ThumbnailHeight { get; }
+        public Optional<int?> ThumbnailWidth { get; }
+        public Optional<int?> ThumbnailHeight { get; }
     }
 }
