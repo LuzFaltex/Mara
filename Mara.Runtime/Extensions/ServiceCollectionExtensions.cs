@@ -13,7 +13,7 @@ namespace Mara.Runtime.Extensions
         {
             services.AddHttpClient();
 
-            services.AddCommandHelp();
+            // services.AddCommandHelp();
 
             services.AddMemoryCache();
 

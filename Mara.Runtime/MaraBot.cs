@@ -2,11 +2,13 @@
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using Mara.Common;
 using Mara.Common.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Remora.Discord.Commands.Services;
 using Remora.Discord.Gateway;
 using Remora.Plugins.Abstractions;
 using Remora.Plugins.Services;
@@ -51,7 +53,7 @@ namespace Mara.Runtime
 
             _logger.LogInformation("Starting bot service...");;
 
-            IServiceScope scope = null;
+            IServiceScope? scope = null;
             try
             {
                 // Create new scope for this session
@@ -65,6 +67,9 @@ namespace Mara.Runtime
 
                 foreach (var plugin in plugins)
                 {
+                    if (plugin is ISkippedPlugin)
+                        continue;
+
                     var serviceScope = _services.CreateScope();
 
                     if (plugin is IMigratablePlugin migratablePlugin)
@@ -98,8 +103,6 @@ namespace Mara.Runtime
                 _logger.LogCritical("A critical error has occurred: {Error}", runResult.Error!.Message);
             }
 
-            OnStopping();
-
             void OnStopping()
             {
                 _logger.LogInformation("Stopping background service.");
@@ -123,7 +126,7 @@ namespace Mara.Runtime
             }
             finally
             {
-                _scope.Dispose();
+                _scope?.Dispose();
             }
         }
     }

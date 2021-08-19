@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Mara.Plugins.BetterEmbeds</name>
+    </assembly>
+    <members>
+        <member name="M:Mara.Plugins.BetterEmbeds.API.RedditRestAPI.GetRedditPostAsync(System.String,System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Gets a post using the subreddit and post id.
+            </summary>
+            <param name="subredditName">The subreddit this post belongs to.</param>
+            <param name="postId">The unique id of this post.</param>
+            <param name="cancellationToken">The cancellation token for this operation.</param>
+            <returns>A retrieval result which may or may not have succeeded.</returns>
+        </member>
+        <member name="T:Mara.Plugins.BetterEmbeds.BetterEmbedPlugin">
+            <summary>
+            Fixes Discord's automatic embeds of sites like Reddit.
+            </summary>
+        </member>
+        <member name="P:Mara.Plugins.BetterEmbeds.BetterEmbedPlugin.Name">
+            <inheritdoc />
+        </member>
+        <member name="P:Mara.Plugins.BetterEmbeds.BetterEmbedPlugin.Version">
+            <inheritdoc />
+        </member>
+        <member name="P:Mara.Plugins.BetterEmbeds.BetterEmbedPlugin.Description">
+            <inheritdoc />
+        </member>
+        <member name="M:Mara.Plugins.BetterEmbeds.BetterEmbedPlugin.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <inheritdoc />
+        </member>
+        <member name="P:Mara.Plugins.BetterEmbeds.Models.Reddit.IRedditPost.PostHint">
+            <summary>
+            Not available or null - text
+            rich:video - get oembed
+            hosted:video - v.reddit video
+            </summary>
+        </member>
+        <member name="M:Mara.Plugins.BetterEmbeds.Services.IQuoteService.BuildQuoteEmbedAsync(Remora.Discord.API.Abstractions.Objects.IMessage,Remora.Discord.API.Abstractions.Objects.IUser)">
+            <summary>
+            Build an embed quote for the provided message. Returns null if the message could not be quoted.
+            </summary>
+            <param name="message">The message to quote.</param>
+            <param name="executingUser">The user that is doing the quoting.</param>
+        </member>
+    </members>
+</doc>

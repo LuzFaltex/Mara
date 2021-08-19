@@ -1,0 +1,9 @@
+<Project>
+    <Import Project="$([MSBuild]::GetPAthOfFileAbove('Directory.Build.Props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <DocumentationFile>..\..\output\$(Configuration)$(MSBuildProjectName).xml</DocumentationFile>
+    <OutputPath>..\..\output\$(Configuration)</OutputPath>
+  </PropertyGroup>
+
+</Project>

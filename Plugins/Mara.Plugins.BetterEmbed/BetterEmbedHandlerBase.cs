@@ -31,11 +31,6 @@ namespace Mara.Plugins.BetterEmbeds
                 return Result.FromSuccess();
             }
 
-            if (gatewayEvent.IsUserMessage())
-            {
-                return Result.FromSuccess();
-            }
-
             if (!gatewayEvent.IsUserMessage())
             {
                 return Result.FromSuccess();
@@ -92,7 +87,7 @@ namespace Mara.Plugins.BetterEmbeds
             // If the post is only comprised of links, delete the invoking method.
             if (!hasPrePostText)
             {
-                await _channelApi.DeleteMessageAsync(gatewayEvent.ChannelID, gatewayEvent.ID, cancellationToken);
+                await _channelApi.DeleteMessageAsync(gatewayEvent.ChannelID, gatewayEvent.ID, "Deleting invocation method.", cancellationToken);
             }
 
             return Result.FromSuccess();
