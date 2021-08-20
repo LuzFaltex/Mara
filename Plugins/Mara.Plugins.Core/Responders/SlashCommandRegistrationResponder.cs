@@ -41,6 +41,8 @@ namespace Mara.Plugins.Core.Responders
                 {
                     _logger.LogWarning("Failed to update slash commands: {Reason}",
                         updateSlash.Error.Message);
+
+                    return updateSlash;
                 }
             }
             else

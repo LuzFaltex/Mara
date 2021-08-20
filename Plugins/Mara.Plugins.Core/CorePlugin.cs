@@ -30,6 +30,7 @@ namespace Mara.Plugins.Core
             serviceCollection.AddResponder<ReadyResponder>();
             serviceCollection.AddResponder<SlashCommandRegistrationResponder>();
             serviceCollection.AddResponder<UnknownEventResponder>();
+            serviceCollection.AddResponder<MessageDeleteResponder>();
 
             serviceCollection.AddCommandGroup<AboutCommand>();
         }

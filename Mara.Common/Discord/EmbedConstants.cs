@@ -36,7 +36,7 @@ namespace Mara.Common.Discord
         public static readonly Color DefaultColor = Color.FromArgb(95, 186, 125);
 
         /// <summary>
-        /// Default embed footer
+        /// Default embed footer. "React with ❌ to remove this embed."
         /// </summary>
         public static readonly EmbedFooter DefaultFooter = new("React with ❌ to remove this embed.");
     }

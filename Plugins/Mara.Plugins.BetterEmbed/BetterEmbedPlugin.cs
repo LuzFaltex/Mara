@@ -42,11 +42,34 @@ namespace Mara.Plugins.BetterEmbeds
 
             serviceCollection.Configure<JsonSerializerOptions>(options =>
             {
-                options.AddConverter<UtcTimestampDateTimeConverter>();
-                options.AddConverter<UnixSecondsDateTimeOffsetConverter>();
+                options.AddDataObjectConverter<IRedditPost, RedditPost>()
+                    .WithPropertyName(x => x.Title, "title")
+                    .WithPropertyName(x => x.Subreddit, "subreddit_name_prefixed")
+                    .WithPropertyName(x => x.Author, "author")
+                    .WithPropertyName(x => x.Url, "url")
+                    .WithPropertyName(x => x.Permalink, "permalink")
+                    .WithPropertyName(x => x.Text, "selftext")
+                    .WithPropertyName(x => x.Score, "score")
+                    .WithPropertyName(x => x.UpvoteRatio, "upvote_ratio")
+                    .WithPropertyName(x => x.PostDate, "created_utc")
+                    .WithPropertyName(x => x.PostFlair, "link_flair_text")
+                    .WithPropertyName(x => x.Media, "media")
+                    .WithPropertyName(x => x.IsVideo, "is_video")
+                    .WithPropertyName(x => x.PostHint, "post_hint")
+                    .WithPropertyName(x => x.WhitelistStatus, "whitelist_status")
+                    .WithPropertyName(x => x.Thumbnail, "thumbnail")
+                    .WithPropertyName(x => x.ThumbnailWidth, "thumbnail_width")
+                    .WithPropertyName(x => x.ThumbnailHeight, "thumbnail_height")
 
-                options.AddDataObjectConverter<IRedditPost, RedditPost>();
-                options.AddDataObjectConverter<IRedditUser, RedditUser>();
+                    .WithPropertyConverter(x => x.PostDate, new UtcTimestampDateTimeConverter());
+
+                options.AddDataObjectConverter<IRedditUser, RedditUser>()
+                    .WithPropertyName(x => x.DisplayNamePrefixed, "display_name_prefixed")
+                    .WithPropertyName(x => x.IconImage, "icon_img");
+
+                options.AddDataObjectConverter<IMedia, Media>()
+                    .WithPropertyName(x => x.RedditVideo, "reddit_video")
+                    .WithPropertyName(x => x.ExternalVideo, "oembed");
 
                 options.AddDataObjectConverter<IOEmbed, OEmbed>();
                 options.AddDataObjectConverter<IPhoto, Photo>();
