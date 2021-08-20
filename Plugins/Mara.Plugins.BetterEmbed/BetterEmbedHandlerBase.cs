@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Mara.Common.Events;
 using Mara.Common.Extensions;
+using Microsoft.Extensions.Options;
 using Remora.Discord.API.Abstractions.Gateway.Events;
 using Remora.Discord.API.Abstractions.Objects;
 using Remora.Discord.API.Abstractions.Rest;
@@ -17,10 +21,14 @@ namespace Mara.Plugins.BetterEmbeds
     {
         private readonly Regex _urlRegex;
         private readonly IDiscordRestChannelAPI _channelApi;
-        protected BetterEmbedHandlerBase(ILogger<BetterEmbedHandlerBase> logger, Regex urlRegex, IDiscordRestChannelAPI channelApi) : base(logger)
+        private readonly ILogger<BetterEmbedHandlerBase> _logger;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        protected BetterEmbedHandlerBase(ILogger<BetterEmbedHandlerBase> logger, Regex urlRegex, IDiscordRestChannelAPI channelApi, IOptions<JsonSerializerOptions> jsonSerializerOptions) : base(logger)
         {
+            _logger = logger;
             _urlRegex = urlRegex;
             _channelApi = channelApi;
+            _jsonSerializerOptions = jsonSerializerOptions.Value;
         }
 
         public override async Task<Result> HandleAsync(IMessageCreate gatewayEvent, CancellationToken cancellationToken = default)
@@ -60,8 +68,8 @@ namespace Mara.Plugins.BetterEmbeds
                 embeds.Add(buildEmbed.Entity);
 
                 // If there is any text on either side of the URLs, record that.
-                if (string.IsNullOrEmpty(match.Groups["Prelink"].Value) ||
-                    string.IsNullOrEmpty(match.Groups["Postlink"].Value))
+                if (!string.IsNullOrEmpty(match.Groups["Prelink"].Value) ||
+                    !string.IsNullOrEmpty(match.Groups["Postlink"].Value))
                 {
                     hasPrePostText = true;
                 }
@@ -72,10 +80,12 @@ namespace Mara.Plugins.BetterEmbeds
                 return Result.FromSuccess();
             }
 
+            _logger.LogTrace(JsonSerializer.Serialize(embeds[0], _jsonSerializerOptions));
+
             // Post the embed(s)
             var postEmbed = await _channelApi.CreateMessageAsync(
                 gatewayEvent.ChannelID,
-                embeds: embeds.AsReadOnly(),
+                embeds: embeds,
                 ct: cancellationToken
             );
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ using Remora.Discord.API.Objects;
 using Remora.Discord.Commands.Feedback.Services;
 using Remora.Discord.Commands.Responders;
 using Remora.Discord.Commands.Services;
+using Remora.Discord.Core;
 using Remora.Results;
 
 namespace Mara.Plugins.Core.Commands
@@ -34,6 +36,7 @@ namespace Mara.Plugins.Core.Commands
         }
 
         [Command("about")]
+        [Description("Provides information about the bot.")]
         public async Task<IResult> ShowBotInfoAsync()
         {
             var identity = _cache.Get<IdentityInformationConfiguration>(nameof(IdentityInformationConfiguration));

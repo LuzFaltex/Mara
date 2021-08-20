@@ -14,8 +14,8 @@ namespace Mara.Plugins.BetterEmbeds.API
 {
     public sealed class RedditRestAPI
     {
-        private const string PostUrl = "https://www.reddit.com/r/{0}/comments/{1}/.json";
-        private const string ProfileUrl = "https://www.reddit.com/user/{0}/about.json";
+        public const string PostUrl = "https://www.reddit.com/r/{0}/comments/{1}/.json";
+        public const string ProfileUrl = "https://www.reddit.com/user/{0}/about.json";
 
         private readonly HttpClient _client;
         private readonly JsonSerializerOptions _serializerOptions;
@@ -113,13 +113,14 @@ namespace Mara.Plugins.BetterEmbeds.API
                         : throw new InvalidOperationException("Response content null, but null returns not allowed.");
                 }
 
-                _logger.LogTrace(element.Value.GetRawText());
+                // _logger.LogTrace(element.Value.GetRawText());
 
                 entity = element.Value.ToObject<TEntity>(_serializerOptions);
             }
 
             if (entity is not null)
             {
+                _logger.LogTrace(JsonSerializer.Serialize(entity));
                 return Result<TEntity>.FromSuccess(entity);
             }
 

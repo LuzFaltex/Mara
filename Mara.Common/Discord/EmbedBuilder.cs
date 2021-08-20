@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using Mara.Common.Extensions;
 using Mara.Common.Results;
 using Remora.Discord.API;
@@ -29,8 +30,6 @@ namespace Mara.Common.Discord
         public IEmbedFooter Footer { get; set; }
         public IEmbedImage Image { get; set; }
         public IEmbedThumbnail Thumbnail { get; set; }
-        public IEmbedVideo Video { get; set; }
-        public IEmbedProvider Provider { get; set; }
         public IEmbedAuthor Author { get; set; }
         public IReadOnlyList<IEmbedField> Fields => new ReadOnlyCollection<IEmbedField>(_fields);
 
@@ -56,8 +55,6 @@ namespace Mara.Common.Discord
             Footer = EmbedConstants.DefaultFooter;
             Image = null;
             Thumbnail = null;
-            Video = null;
-            Provider = null;
             _fields = fields;
         }
 
@@ -72,9 +69,7 @@ namespace Mara.Common.Discord
                 Color = embed.Colour.GetValueOrDefault(EmbedConstants.DefaultColor),
                 Footer = embed.Footer.GetValueOrDefault(EmbedConstants.DefaultFooter),
                 Image = embed.Image.GetValueOrDefault(default),
-                Thumbnail = embed.Thumbnail.GetValueOrDefault(default),
-                Video = embed.Video.GetValueOrDefault(default),
-                Provider = embed.Provider.GetValueOrDefault(default)
+                Thumbnail = embed.Thumbnail.GetValueOrDefault(default)
             };
 
         public int Length
@@ -199,9 +194,9 @@ namespace Mara.Common.Discord
         /// <returns>
         ///     The current builder.
         /// </returns>
-        public EmbedBuilder WithAuthor([MaxLength(EmbedConstants.MaxAuthorNameLength)] string name, [Url] string url = default, [Url] string iconUrl = default, [Url] string proxyIconUrl = default)
+        public EmbedBuilder WithAuthor([MaxLength(EmbedConstants.MaxAuthorNameLength)] string name, [Url] string url = default, [Url] string iconUrl = default)
         {
-            Author = new EmbedAuthor(name, url, iconUrl, proxyIconUrl);
+            Author = new EmbedAuthor(name, url, iconUrl);
             return this;
         }
 
@@ -213,7 +208,7 @@ namespace Mara.Common.Discord
                 ? avatarUrlResult.Entity
                 : CDN.GetDefaultUserAvatarUrl(user, imageSize: 256).Entity;
 
-            Author = new EmbedAuthor($"{user.Username}#{user.Discriminator}", avatarUrl!.AbsoluteUri);
+            Author = new EmbedAuthor($"{user.Username}#{user.Discriminator}", IconUrl:avatarUrl!.AbsoluteUri);
             return this;
         }
 
@@ -225,13 +220,13 @@ namespace Mara.Common.Discord
         /// <returns>
         ///     The current builder.
         /// </returns>
-        public EmbedBuilder WithFooter(string text, [Url] string iconUrl = default, [Url] string proxyIconUrl = default)
+        public EmbedBuilder WithFooter(string text, [Url] string iconUrl = default)
         {
             if (text.Length > EmbedConstants.MaxFooterTextLength)
                 throw new ArgumentException(
                     $"Footer length must be less than or equal to {EmbedConstants.MaxFooterTextLength}", nameof(text));
 
-            return WithFooter(new EmbedFooter(text, iconUrl, proxyIconUrl));
+            return WithFooter(new EmbedFooter(text, iconUrl));
         }
 
         public EmbedBuilder WithFooter(IEmbedFooter footer)
@@ -296,19 +291,19 @@ namespace Mara.Common.Discord
             => Length > EmbedConstants.MaxEmbedLength
                 ? throw new InvalidOperationException(
                     $"Total embed length must be less than or equal to {EmbedConstants.MaxEmbedLength}.")
-                : new Embed(
-                    Title,
-                    Type,
-                    Description,
-                    Url,
-                    Timestamp,
-                    Color,
-                    !string.IsNullOrEmpty(Footer.Text) ? new Optional<IEmbedFooter>(Footer) : new Optional<IEmbedFooter>(),
-                    new Optional<IEmbedImage>(Image),
-                    new Optional<IEmbedThumbnail>(Thumbnail),
-                    new Optional<IEmbedVideo>(Video),
-                    new Optional<IEmbedProvider>(Provider),
-                    new Optional<IEmbedAuthor>(Author),
-                    new Optional<IReadOnlyList<IEmbedField>>(Fields));
+                : new Embed()
+                {
+                    Title = new Optional<string>(Title),
+                    Type = new Optional<EmbedType>(Type),
+                    Description = new Optional<string>(Description),
+                    Url = new Optional<string>(Url),
+                    Timestamp = new Optional<DateTimeOffset>(Timestamp),
+                    Colour = new Optional<Color>(Color),
+                    Footer = new Optional<IEmbedFooter>(Footer),
+                    Image = new Optional<IEmbedImage>(Image),
+                    Thumbnail = new Optional<IEmbedThumbnail>(Thumbnail),
+                    Author = new Optional<IEmbedAuthor>(Author),
+                    Fields = new Optional<IReadOnlyList<IEmbedField>>(Fields)
+                };
     }
 }

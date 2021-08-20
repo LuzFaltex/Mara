@@ -1,10 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Mara.Common.Results;
 using Mara.Plugins.BetterEmbeds.Results;
 using Mara.Plugins.BetterEmbeds.Services;
+using Microsoft.Extensions.Options;
 using Remora.Discord.API.Abstractions.Objects;
 using Remora.Discord.API.Abstractions.Rest;
 using Remora.Discord.Core;
@@ -21,7 +23,7 @@ namespace Mara.Plugins.BetterEmbeds.MessageHandlers
         private readonly IQuoteService _quoteService;
         private readonly IDiscordRestChannelAPI _channelApi;
 
-        public QuoteEmbedHandler(ILogger<QuoteEmbedHandler> logger, IQuoteService quoteService, IDiscordRestChannelAPI channelApi) : base(logger, UrlRegex, channelApi)
+        public QuoteEmbedHandler(ILogger<QuoteEmbedHandler> logger, IQuoteService quoteService, IDiscordRestChannelAPI channelApi, IOptions<JsonSerializerOptions> jsonOptions) : base(logger, UrlRegex, channelApi, jsonOptions)
         {
             _quoteService = quoteService;
             _channelApi = channelApi;

@@ -14,7 +14,12 @@ namespace Mara.Plugins.BetterEmbeds.Models.Reddit.Converters
 
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64()).UtcDateTime;
+            if (reader.TryGetDouble(out double value))
+            {
+                return DateTimeOffset.FromUnixTimeSeconds((long)value).UtcDateTime;
+            }
+            
+            return DateTimeOffset.UnixEpoch.UtcDateTime;
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
@@ -33,7 +38,12 @@ namespace Mara.Plugins.BetterEmbeds.Models.Reddit.Converters
 
         public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64());
+            if (reader.TryGetDouble(out double value))
+            {
+                return DateTimeOffset.FromUnixTimeSeconds((long)value).UtcDateTime;
+            }
+
+            return DateTimeOffset.UnixEpoch.UtcDateTime;
         }
 
         public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)
