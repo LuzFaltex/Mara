@@ -1,7 +1,12 @@
-﻿using Remora.Discord.Core;
+﻿using System;
+using Remora.Discord.API.Abstractions.Objects;
+using Remora.Discord.Core;
 
 namespace Mara.Common.Discord.Feedback
 {
+    /// <summary>
+    /// Provides information about the identity of the current application.
+    /// </summary>
     public sealed class IdentityInformationConfiguration
     {
         /// <summary>
@@ -10,13 +15,8 @@ namespace Mara.Common.Discord.Feedback
         public Snowflake Id { get; set; }
 
         /// <summary>
-        /// Gets the application id if the bot.
+        /// Gets the application behind this bot.
         /// </summary>
-        public Snowflake ApplicationId { get; set; }
-
-        /// <summary>
-        /// Gets the id of the bot's owner.
-        /// </summary>
-        public Snowflake OwnerId { get; set; }
+        public IApplication Application { get; set; }
     }
 }

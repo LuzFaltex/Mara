@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
 using Mara.Common.Extensions;
 using Mara.Common.Results;
 using Remora.Discord.API;
@@ -21,18 +20,29 @@ namespace Mara.Common.Discord
         public string Title { get; set; }
 
         public EmbedType Type { get; set; }
+        
         [MaxLength(EmbedConstants.MaxDescriptionLength)]
         public string Description { get; set; }
+        
         [Url]
+        
         public string Url { get; set; }
+        
         public DateTimeOffset Timestamp { get; set; }
+        
         public Color Color { get; set; }
+        
         public IEmbedFooter Footer { get; set; }
-        public IEmbedImage Image { get; set; }
-        public IEmbedThumbnail Thumbnail { get; set; }
-        public IEmbedAuthor Author { get; set; }
+        
+        public IEmbedImage? Image { get; set; }
+        
+        public IEmbedThumbnail? Thumbnail { get; set; }
+        
+        public IEmbedAuthor? Author { get; set; }
+        
         public IReadOnlyList<IEmbedField> Fields => new ReadOnlyCollection<IEmbedField>(_fields);
 
+        
         private IList<IEmbedField> _fields;
 
         public EmbedBuilder() : this(new List<IEmbedField>(EmbedConstants.MaxFieldCount))
@@ -55,6 +65,7 @@ namespace Mara.Common.Discord
             Footer = EmbedConstants.DefaultFooter;
             Image = null;
             Thumbnail = null;
+            Author = null;
             _fields = fields;
         }
 
@@ -68,18 +79,19 @@ namespace Mara.Common.Discord
                 Timestamp = embed.Timestamp.GetValueOrDefault(DateTimeOffset.UtcNow),
                 Color = embed.Colour.GetValueOrDefault(EmbedConstants.DefaultColor),
                 Footer = embed.Footer.GetValueOrDefault(EmbedConstants.DefaultFooter),
-                Image = embed.Image.GetValueOrDefault(default),
-                Thumbnail = embed.Thumbnail.GetValueOrDefault(default)
+                Image = embed.Image.HasValue ? embed.Image.Value : null,
+                Thumbnail = embed.Thumbnail.HasValue ? embed.Thumbnail.Value : null
             };
 
+        /// <summary>
+        /// Returns the overall length of the embed.
+        /// </summary>
         public int Length
         {
             get
             {
                 int titleLength = Title.Length;
-                int authorLength = Author.Name.HasValue
-                    ? Author.Name.Value!.Length
-                    : 0;
+                int authorLength = Author?.Name.Length ?? 0;
                 int descriptionLength = Description.Length;
                 int footerLength = Footer?.Text.Length ?? 0;
                 int fieldSum = _fields.Sum(field => field.Name.Length + field.Value.Length);
@@ -182,9 +194,9 @@ namespace Mara.Common.Discord
         /// <returns>
         ///     The current builder.
         /// </returns>
-        public EmbedBuilder WithColor(Color colour)
+        public EmbedBuilder WithColor(Color color)
         {
-            Color = colour;
+            Color = color;
             return this;
         }
 
@@ -194,7 +206,7 @@ namespace Mara.Common.Discord
         /// <returns>
         ///     The current builder.
         /// </returns>
-        public EmbedBuilder WithAuthor([MaxLength(EmbedConstants.MaxAuthorNameLength)] string name, [Url] string url = default, [Url] string iconUrl = default)
+        public EmbedBuilder WithAuthor([MaxLength(EmbedConstants.MaxAuthorNameLength)] string name, [Url] string url = "", [Url] string iconUrl = "")
         {
             Author = new EmbedAuthor(name, url, iconUrl);
             return this;
@@ -220,7 +232,11 @@ namespace Mara.Common.Discord
         /// <returns>
         ///     The current builder.
         /// </returns>
-        public EmbedBuilder WithFooter(string text, [Url] string iconUrl = default)
+        public EmbedBuilder WithFooter
+        (
+            [MaxLength(EmbedConstants.MaxFooterTextLength)] string text, 
+            [Url] string iconUrl = ""
+        )
         {
             if (text.Length > EmbedConstants.MaxFooterTextLength)
                 throw new ArgumentException(
@@ -254,7 +270,7 @@ namespace Mara.Common.Discord
         ///     <see cref="Embed"/>.
         /// </summary>
         /// <param name="field">The field builder class containing the field properties.</param>
-        /// <exception cref="ArgumentException">Field count exceeds <see cref="MaxFieldCount"/>.</exception>
+        /// <exception cref="ArgumentException">Field count exceeds <see cref="EmbedConstants.MaxFieldCount"/>.</exception>
         /// <returns>
         ///     The current builder.
         /// </returns>
@@ -286,23 +302,23 @@ namespace Mara.Common.Discord
         /// <returns>
         ///     The built embed object.
         /// </returns>
-        /// <exception cref="InvalidOperationException">Total embed length exceeds <see cref="MaxEmbedLength"/>.</exception>
+        /// <exception cref="InvalidOperationException">Total embed length exceeds <see cref="EmbedConstants.MaxEmbedLength"/>.</exception>
         public Embed Build()
             => Length > EmbedConstants.MaxEmbedLength
                 ? throw new InvalidOperationException(
                     $"Total embed length must be less than or equal to {EmbedConstants.MaxEmbedLength}.")
                 : new Embed()
                 {
-                    Title = new Optional<string>(Title),
-                    Type = new Optional<EmbedType>(Type),
-                    Description = new Optional<string>(Description),
-                    Url = new Optional<string>(Url),
-                    Timestamp = new Optional<DateTimeOffset>(Timestamp),
-                    Colour = new Optional<Color>(Color),
+                    Title = Title,
+                    Type = Type,
+                    Description = Description,
+                    Url = Url,
+                    Timestamp = Timestamp,
+                    Colour = Color,
                     Footer = new Optional<IEmbedFooter>(Footer),
-                    Image = new Optional<IEmbedImage>(Image),
-                    Thumbnail = new Optional<IEmbedThumbnail>(Thumbnail),
-                    Author = new Optional<IEmbedAuthor>(Author),
+                    Image = Image is null ? default : new Optional<IEmbedImage>(Image),
+                    Thumbnail = Thumbnail is null ? default : new Optional<IEmbedThumbnail>(Thumbnail),
+                    Author = Author is null ? default : new Optional<IEmbedAuthor>(Author),
                     Fields = new Optional<IReadOnlyList<IEmbedField>>(Fields)
                 };
     }

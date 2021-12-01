@@ -96,7 +96,8 @@ namespace Mara.Plugins.BetterEmbeds.MessageHandlers
             {
                 var user = userResult.Entity;
                 var url = new Uri(user.IconImage);
-                userIconUrl = url.GetLeftPart(UriPartial.Path);
+                userIconUrl = url.GetLeftPart(UriPartial.Path)
+                    ;
             }
 
             /*
@@ -195,35 +196,28 @@ namespace Mara.Plugins.BetterEmbeds.MessageHandlers
 
             */
 
-            var embed = new Embed()
-            {
-                Title = redditPost.Title,
-                Url = string.Format(RedditRestAPI.PostUrl, subreddit, postId).Replace(".json", ""),
-                Author = new EmbedAuthor(redditPost.Author,
-                    userUrl, userIconUrl),
-                Footer = new EmbedFooter($"Posted on {redditPost.Subreddit}",
-                    "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png"),
-                Timestamp = (DateTimeOffset) redditPost.PostDate,
-                Colour = Color.DimGray,
-                Type = EmbedType.Rich
-            };
+            var embedBuilder = new EmbedBuilder()
+                .WithTitle(redditPost.Title)
+                .WithUrl(string.Format(RedditRestAPI.PostUrl, subreddit, postId).Replace(".json", ""))
+                .WithAuthor(redditPost.Author, userUrl, userIconUrl)
+                .WithFooter($"Posted on {redditPost.Subreddit}",
+                    "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png")
+                .WithTimestamp((DateTimeOffset) redditPost.PostDate);
 
-            List<EmbedField> fields = new();
+            embedBuilder.Color = Color.DimGray;
 
-            fields.Add(new EmbedField("Score", $"{redditPost.Score} ({redditPost.UpvoteRatio * 100}%)", true));
+            embedBuilder.AddField("Score", $"{redditPost.Score} ({redditPost.UpvoteRatio * 100}%)", inline: true);
             
             if (redditPost.PostFlair.HasValue)
             {
                 if (redditPost.PostFlair.Value.Contains(":"))
                 {
-                    var parts = redditPost.PostFlair.Value.Split(":");
-                    // embedBuilder.AddField($"{parts[0]}:", parts[1], true);
-                    fields.Add(new EmbedField($"{parts[0]}:", parts[1], true));
+                    var parts = redditPost.PostFlair.Value.Split(":", StringSplitOptions.TrimEntries);
+                    embedBuilder.AddField($"{parts[0]}:", parts[1], true);
                 }
                 else
                 {
-                    // embedBuilder.AddField("Post Flair:", redditPost.PostFlair.Value, true);
-                    fields.Add(new EmbedField("Post Flair:", redditPost.PostFlair.Value, true));
+                    embedBuilder.AddField("Post Flair:", redditPost.PostFlair.Value, true);
                 }
             }
             
@@ -250,11 +244,13 @@ namespace Mara.Plugins.BetterEmbeds.MessageHandlers
                 case EmbedType.Image:
                 case EmbedType.GIFV:
                 {
-                    embed = embed with {Image = new EmbedImage(redditPost.Url)};
+                    embedBuilder.WithImageUrl(redditPost.Url);
                     break;
                 }
                 case EmbedType.Video when redditPost.Media.HasValue:
                 {
+                    // TODO: Post new embed containing video
+                    /*
                     var media = redditPost.Media.Value;
                     if (media.RedditVideo.HasValue)
                     {
@@ -265,34 +261,34 @@ namespace Mara.Plugins.BetterEmbeds.MessageHandlers
                             embed = embed with {Image = new EmbedImage(redditVideo.Url)};
                         }
                     }
-
+                    */
                     break;
+
                 }
                 case EmbedType.Link:
                 case EmbedType.Article:
                 {
-                    embed = embed with
-                    {
-                        Thumbnail = new EmbedThumbnail(redditPost.Thumbnail),
-                        Description = FormatUtilities.Url(redditPost.Url, redditPost.Url)
-                    };
-                    
+                    embedBuilder
+                        .WithThumbnailUrl(redditPost.Thumbnail)
+                        .WithDescription(FormatUtilities.Url(redditPost.Url));
+
                     break;
                 }
                 case EmbedType.Rich:
                 default:
                 {
-                    embed = embed with
-                    {
-                        Description = redditPost.Text.Value.Truncate(EmbedConstants.MaxDescriptionLength,
-                            $"…\n{FormatUtilities.Url("Read More", embed.Url.Value)}")
-                    };
+                    embedBuilder.WithDescription(redditPost.Text.Value.Truncate(EmbedConstants.MaxDescriptionLength,
+                        $"…\n{FormatUtilities.Url("Read More", embedBuilder.Url)}"));
+
                     break;
                 }
             }
 
-            embed = embed with {Fields = fields};
-            return embed;
+            var verifyResult = embedBuilder.Ensure();
+
+            return verifyResult.IsSuccess
+                ? embedBuilder.Build()
+                : Result<IEmbed>.FromError(verifyResult);
         }
 
         private async Task<bool> IsGuildNsfw(Snowflake guildId, CancellationToken cancellationToken = default)

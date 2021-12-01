@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Remora.Discord" Version="4.0.0" />
+    <PackageReference Include="Remora.Plugins" Version="3.0.0" />
+  </ItemGroup>
+
+</Project>

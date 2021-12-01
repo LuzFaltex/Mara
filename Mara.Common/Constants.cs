@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Mara.Common
+﻿namespace Mara.Common
 {
-    public class Constants
+    /// <summary>
+    /// Provides a set of constant values
+    /// </summary>
+    public static class Constants
     {
-
+        
     }
 }

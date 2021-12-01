@@ -3,6 +3,9 @@ using Remora.Discord.API.Objects;
 
 namespace Mara.Common.Discord
 {
+    /// <summary>
+    /// A set of constants which represent restraits on Embeds.
+    /// </summary>
     public static class EmbedConstants
     {
         /// <summary> 
@@ -38,6 +41,14 @@ namespace Mara.Common.Discord
         /// <summary>
         /// Default embed footer. "React with ❌ to remove this embed."
         /// </summary>
-        public static readonly EmbedFooter DefaultFooter = new("React with ❌ to remove this embed.");
+        public static readonly EmbedFooter DefaultFooter = new("React with ❌ to remove this embed");
+
+        /// <summary>
+        /// A set of image assets in url form for use in embeds.
+        /// </summary>
+        public static class ImageUrls
+        {
+
+        }
     }
 }

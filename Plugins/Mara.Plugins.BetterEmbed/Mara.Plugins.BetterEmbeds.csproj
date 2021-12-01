@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Version>1.0.0</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <AssemblyFileVersion>$(Version)</AssemblyFileVersion>
@@ -9,9 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="JsonDocumentPath" Version="1.0.2" />
-    <PackageReference Include="Remora.Discord" Version="3.0.51" />
-    <PackageReference Include="Remora.Plugins" Version="2.1.0" />
-    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+    <PackageReference Include="Remora.Plugins" Version="3.0.0" />
+    <PackageReference Include="Remora.Rest" Version="1.1.0" />
+    <PackageReference Include="Remora.Rest.Core" Version="1.0.0" />
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
