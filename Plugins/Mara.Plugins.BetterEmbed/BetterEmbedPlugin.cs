@@ -3,17 +3,22 @@ using System.Reflection;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Mara.Plugins.BetterEmbeds;
-using Mara.Plugins.BetterEmbeds.API;
 using Mara.Plugins.BetterEmbeds.MessageHandlers;
 using Mara.Plugins.BetterEmbeds.Models.OEmbed;
 using Mara.Plugins.BetterEmbeds.Models.Reddit;
 using Mara.Plugins.BetterEmbeds.Models.Reddit.Converters;
 using Mara.Plugins.BetterEmbeds.Services;
-using Remora.Discord.API.Extensions;
-using Remora.Discord.API.Json;
 using Remora.Discord.Gateway.Extensions;
 using Remora.Plugins.Abstractions;
 using Remora.Plugins.Abstractions.Attributes;
+using Remora.Rest.Results;
+using Remora.Rest.Extensions;
+using Polly;
+using System.Net.Http;
+using Polly.Contrib.WaitAndRetry;
+using Remora.Results;
+using System.Threading.Tasks;
+using Polly.Retry;
 
 [assembly:RemoraPlugin(typeof(BetterEmbedPlugin))]
 
@@ -32,10 +37,52 @@ namespace Mara.Plugins.BetterEmbeds
         public override string Description => "Provides improved embed functionality for links Discord handles poorly.";
 
         /// <inheritdoc />
-        public override void ConfigureServices(IServiceCollection serviceCollection)
+        public override Result ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IQuoteService, QuoteService>();
-            serviceCollection.AddScoped<RedditRestAPI>();
+            // serviceCollection.AddRestHttpClient<RestHttpClient<RestResultError<HttpResultError>>>();
+
+            var retryDelay = Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 5);
+
+            var clientBuilder = serviceCollection
+                .AddRestHttpClient<RestResultError<HttpResultError>>("Reddit")
+                .ConfigureHttpClient((services, client) =>
+                {
+                    var assemblyName = Assembly.GetExecutingAssembly().GetName();
+                    var name = assemblyName.Name ?? "LuzFaltex.Mara";
+                    var version = assemblyName.Version ?? new Version(1, 0, 0);
+
+                    client.BaseAddress = new("https://www.reddit.com/");
+                    client.DefaultRequestHeaders.UserAgent.Add
+                    (
+                        new System.Net.Http.Headers.ProductInfoHeaderValue(name, version.ToString())
+                    );
+                })
+                .AddTransientHttpErrorPolicy
+                (
+                    b => b.WaitAndRetryAsync(retryDelay)
+                )
+                .AddPolicyHandler
+                (
+                    Policy
+                    .HandleResult<HttpResponseMessage>(r => r.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                    .WaitAndRetryAsync
+                    (
+                        1,
+                        (iteration, response, context) =>
+                        {
+                            if (response.Result == default)
+                            {
+                                return TimeSpan.FromSeconds(1);
+                            }
+
+                            return (TimeSpan)(response.Result.Headers.RetryAfter is null or { Delta: null }
+                                ? TimeSpan.FromSeconds(1)
+                                : response.Result.Headers.RetryAfter.Delta);
+                        },
+                        (_, _, _, _) => Task.CompletedTask
+                    )
+                );
 
             serviceCollection.AddResponder<QuoteEmbedHandler>();
             serviceCollection.AddResponder<RedditEmbedBuilder>();
@@ -75,6 +122,8 @@ namespace Mara.Plugins.BetterEmbeds
                 options.AddDataObjectConverter<IPhoto, Photo>();
                 options.AddDataObjectConverter<IVideo, Video>();
             });
-        }
+
+            return Result.FromSuccess();
+        }        
     }
 }

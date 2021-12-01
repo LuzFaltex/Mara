@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Remora.Discord.API.Abstractions.Gateway.Events;
 using Remora.Discord.Commands.Services;
-using Remora.Discord.Core;
 using Remora.Discord.Gateway.Responders;
+using Remora.Rest.Core;
 using Remora.Results;
+
+using DiscordConstants = Remora.Discord.API.Constants;
 
 namespace Mara.Plugins.Core.Responders
 {
@@ -24,7 +26,7 @@ namespace Mara.Plugins.Core.Responders
         public async Task<Result> RespondAsync(IGuildCreate gatewayEvent, CancellationToken cancellationToken = new CancellationToken())
         {
             // For debug only
-            var guildId = new Snowflake(861515006067998731);
+            var guildId = new Snowflake(861515006067998731, DiscordConstants.DiscordEpoch);
 
             if (gatewayEvent.ID != guildId)
             {

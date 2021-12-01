@@ -1,24 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31321.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{5095E260-6923-41C6-9DF8-A395F2EE275C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Runtime", "Mara.Runtime\Mara.Runtime.csproj", "{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Runtime", "Mara.Runtime\Mara.Runtime.csproj", "{CBD53B34-977B-4CD0-BD6E-6D03B98A191F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Plugins.Core", "Plugins\Mara.Plugins.Core\Mara.Plugins.Core.csproj", "{9B5BAB08-4F92-420B-B45E-149B566664A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Core", "Plugins\Mara.Plugins.Core\Mara.Plugins.Core.csproj", "{9B5BAB08-4F92-420B-B45E-149B566664A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Common", "Mara.Common\Mara.Common.csproj", "{F0E906C4-5187-48A6-864E-B526AA2FDB9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Common", "Mara.Common\Mara.Common.csproj", "{F0E906C4-5187-48A6-864E-B526AA2FDB9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Plugins.Mediator", "Plugins\Mara.Plugins.MediatR\Mara.Plugins.Mediator.csproj", "{189647A0-1828-4640-9504-C70AB7971370}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Mediator", "Plugins\Mara.Plugins.MediatR\Mara.Plugins.Mediator.csproj", "{189647A0-1828-4640-9504-C70AB7971370}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mara.Plugins.BetterEmbeds", "Plugins\Mara.Plugins.BetterEmbed\Mara.Plugins.BetterEmbeds.csproj", "{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.BetterEmbeds", "Plugins\Mara.Plugins.BetterEmbed\Mara.Plugins.BetterEmbeds.csproj", "{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{39EA8E1A-E1D9-419D-AF42-860058C74536}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Consent", "Plugins\Mara.Plugins.Consent\Mara.Plugins.Consent.csproj", "{EE0456BD-8336-4C69-9E03-143B5B37BC51}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Moderation", "Plugins\Mara.Plugins.Moderation\Mara.Plugins.Moderation.csproj", "{D7B323BE-10DD-4C87-99C3-D1E56A9A95C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.BetterEmbeds.Tests", "Plugins\Mara.Plugins.BetterEmbeds.Tests\Mara.Plugins.BetterEmbeds.Tests.csproj", "{164CD06A-7F1D-4B35-B52F-7D9751DA3719}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Core.Tests", "Plugins\Mara.Plugins.Core.Tests\Mara.Plugins.Core.Tests.csproj", "{667C812B-DC53-4AF1-A759-CEB3E186DE25}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Mediator.Tests", "Plugins\Mara.Plugins.Mediator.Tests\Mara.Plugins.Mediator.Tests.csproj", "{708A306D-15C9-4872-A894-2419BF271689}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Plugins.Moderation.Tests", "Plugins\Mara.Plugins.Moderation.Tests\Mara.Plugins.Moderation.Tests.csproj", "{BA0B9865-7049-4963-8462-BC517F23F594}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mara.Tests", "Mara.Tests\Mara.Tests.csproj", "{BA3B9272-B100-463A-8C67-16CBFDDA68BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +60,34 @@ Global
 		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE0456BD-8336-4C69-9E03-143B5B37BC51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0456BD-8336-4C69-9E03-143B5B37BC51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0456BD-8336-4C69-9E03-143B5B37BC51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0456BD-8336-4C69-9E03-143B5B37BC51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7B323BE-10DD-4C87-99C3-D1E56A9A95C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B323BE-10DD-4C87-99C3-D1E56A9A95C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B323BE-10DD-4C87-99C3-D1E56A9A95C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B323BE-10DD-4C87-99C3-D1E56A9A95C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{164CD06A-7F1D-4B35-B52F-7D9751DA3719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{164CD06A-7F1D-4B35-B52F-7D9751DA3719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{164CD06A-7F1D-4B35-B52F-7D9751DA3719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{164CD06A-7F1D-4B35-B52F-7D9751DA3719}.Release|Any CPU.Build.0 = Release|Any CPU
+		{667C812B-DC53-4AF1-A759-CEB3E186DE25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{667C812B-DC53-4AF1-A759-CEB3E186DE25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{667C812B-DC53-4AF1-A759-CEB3E186DE25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{667C812B-DC53-4AF1-A759-CEB3E186DE25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{708A306D-15C9-4872-A894-2419BF271689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{708A306D-15C9-4872-A894-2419BF271689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{708A306D-15C9-4872-A894-2419BF271689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{708A306D-15C9-4872-A894-2419BF271689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0B9865-7049-4963-8462-BC517F23F594}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0B9865-7049-4963-8462-BC517F23F594}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0B9865-7049-4963-8462-BC517F23F594}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0B9865-7049-4963-8462-BC517F23F594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA3B9272-B100-463A-8C67-16CBFDDA68BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3B9272-B100-463A-8C67-16CBFDDA68BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3B9272-B100-463A-8C67-16CBFDDA68BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3B9272-B100-463A-8C67-16CBFDDA68BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +96,12 @@ Global
 		{9B5BAB08-4F92-420B-B45E-149B566664A7} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
 		{189647A0-1828-4640-9504-C70AB7971370} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
 		{AC75C1EC-34E5-4BBE-8060-78D174F4D6D3} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{EE0456BD-8336-4C69-9E03-143B5B37BC51} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{D7B323BE-10DD-4C87-99C3-D1E56A9A95C4} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{164CD06A-7F1D-4B35-B52F-7D9751DA3719} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{667C812B-DC53-4AF1-A759-CEB3E186DE25} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{708A306D-15C9-4872-A894-2419BF271689} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
+		{BA0B9865-7049-4963-8462-BC517F23F594} = {5095E260-6923-41C6-9DF8-A395F2EE275C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7F5007AB-7A59-4CAF-B60F-5FA522B11A6C}

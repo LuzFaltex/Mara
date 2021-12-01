@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
-using Mara.Plugins.Core;
 using Mara.Plugins.Core.Commands;
 using Mara.Plugins.Core.Responders;
 using Microsoft.Extensions.DependencyInjection;
 using Remora.Commands.Extensions;
 using Remora.Discord.Gateway.Extensions;
 using Remora.Plugins.Abstractions;
-using Remora.Plugins.Abstractions.Attributes;
 using Remora.Results;
-
-[assembly:RemoraPlugin(typeof(CorePlugin))]
 
 namespace Mara.Plugins.Core
 {
+    /// <summary>
+    /// Represents core functionality.
+    /// </summary>
     public class CorePlugin : PluginDescriptor
     {
         /// <inheritdoc />
@@ -25,20 +25,22 @@ namespace Mara.Plugins.Core
         public override string Description => "Provides core functionality for the bot.";
 
         /// <inheritdoc />
-        public override void ConfigureServices(IServiceCollection serviceCollection)
+        public override Result ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddResponder<ReadyResponder>();
             serviceCollection.AddResponder<SlashCommandRegistrationResponder>();
             serviceCollection.AddResponder<UnknownEventResponder>();
-            serviceCollection.AddResponder<MessageDeleteResponder>();
+            serviceCollection.AddResponder<DeleteRequestResponder>();
 
             serviceCollection.AddCommandGroup<AboutCommand>();
+
+            return Result.FromSuccess();
         }
 
         /// <inheritdoc />
-        public override ValueTask<Result> InitializeAsync(IServiceProvider serviceProvider)
+        public override ValueTask<Result> InitializeAsync(IServiceProvider serviceProvider, CancellationToken ct = default)
         {
-            return base.InitializeAsync(serviceProvider);
+            return base.InitializeAsync(serviceProvider, ct);
         }
     }
 }

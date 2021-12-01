@@ -1,25 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Mara.Common;
+using Mara.Common.Discord.Feedback;
 using Mara.Common.Models;
-using Mara.Runtime.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Remora.Commands.Extensions;
 using Remora.Discord.API.Abstractions.Gateway.Commands;
-using Remora.Discord.API.Extensions;
 using Remora.Discord.Commands.Extensions;
 using Remora.Discord.Gateway;
 using Remora.Discord.Gateway.Extensions;
-using Remora.Discord.Rest.Extensions;
 using Remora.Plugins.Services;
+using Remora.Results;
 using Serilog;
 using Serilog.Events;
 
@@ -62,43 +59,46 @@ namespace Mara.Runtime
                 .UseDefaultServiceProvider(x => x.ValidateScopes = true)
                 .ConfigureServices((context, services) =>
                 {
-                    var pluginService = new PluginService();
-                    var plugins = pluginService.LoadAvailablePlugins().ToList();
+                    var pluginServiceOptions = new PluginServiceOptions(new List<string>() { "./Plugins" });
+                    var pluginService = new PluginService(Options.Create(pluginServiceOptions));
 
-                    Console.WriteLine($"Discovered {plugins.Count} plugins.");
+                    var plugins = pluginService.LoadPluginTree();
+                    var configurePluginsResult = plugins.ConfigureServices(services);
+                    if (!configurePluginsResult.IsSuccess)
+                    {
+                        Console.WriteLine($"Failed to load plugins! {configurePluginsResult.Error.Message}");
+                        if (configurePluginsResult.Error is ExceptionError exe)
+                        {
+                            Console.WriteLine(exe.Exception.ToString());
+                        }
+                    }
 
                     services.Configure<MaraConfig>(context.Configuration);
                     services.AddSingleton(pluginService);
+                    services.AddSingleton<IdentityInformationConfiguration>();
 
                     Debug.Assert(!string.IsNullOrEmpty(context.Configuration[nameof(MaraConfig.DiscordToken)]));
 
-                    services.AddDiscordApi();
                     services.AddDiscordGateway(x => context.Configuration[nameof(MaraConfig.DiscordToken)]);
-                    services.AddDiscordRest(x => context.Configuration[nameof(MaraConfig.DiscordToken)]);
-                    services.AddCommands();
                     services.AddDiscordCommands(enableSlash: true);
-                    services.AddMara();
+
+                    services.AddMemoryCache();
+                    services.AddHostedService<MaraBot>();
 
                     services.Configure<DiscordGatewayClientOptions>(x
                         => x.Intents |=
                             GatewayIntents.DirectMessages |
                             GatewayIntents.GuildBans |
+                            GatewayIntents.GuildEmojisAndStickers |
                             GatewayIntents.GuildIntegrations |
                             GatewayIntents.GuildInvites |
                             GatewayIntents.GuildMembers |
-                            GatewayIntents.GuildMessageReactions);
-
-                    foreach (var plugin in plugins)
-                    {
-                        if (plugin is ISkippedPlugin)
-                            continue;
-
-                        Console.Write($"Configuring {plugin.Name} version {plugin.Version.ToString(3)}...");
-                        plugin.ConfigureServices(services);
-                        Console.WriteLine("Done");
-                    }
+                            GatewayIntents.GuildMessageReactions |
+                            GatewayIntents.GuildMessages |
+                            GatewayIntents.Guilds |
+                            GatewayIntents.GuildWebhooks);
                 })
-                .ConfigureLogging((context, builder) =>
+                .ConfigureLogging((_, builder) =>
                 {
                     Serilog.Core.Logger seriLogger = new LoggerConfiguration()
                         .MinimumLevel.Verbose()
@@ -110,8 +110,11 @@ namespace Mara.Runtime
 
                     builder.AddSerilog(seriLogger);
                     Log.Logger = seriLogger;
-                })
-                .UseConsoleLifetime();
+                });
+
+            hostBuilder = (Debugger.IsAttached && Environment.UserInteractive)
+                ? hostBuilder.UseConsoleLifetime()
+                : hostBuilder.UseWindowsService();
 
             using var host = hostBuilder.Build();
 

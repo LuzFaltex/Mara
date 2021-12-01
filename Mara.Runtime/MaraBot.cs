@@ -2,16 +2,13 @@
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using Mara.Common;
-using Mara.Common.Models;
+using Mara.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Remora.Discord.Commands.Services;
 using Remora.Discord.Gateway;
-using Remora.Plugins.Abstractions;
 using Remora.Plugins.Services;
+using Remora.Results;
 
 namespace Mara.Runtime
 {
@@ -19,21 +16,17 @@ namespace Mara.Runtime
     {
         private readonly DiscordGatewayClient _discordClient;
         private readonly IServiceProvider _services;
-        private readonly MaraConfig _config;
         private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly IHostEnvironment _environment;
         private readonly ILogger<MaraBot> _logger;
         private readonly PluginService _pluginService;
 
-        private IServiceScope _scope;
+        private IServiceScope? _scope = null;
 
         public MaraBot
         (
             DiscordGatewayClient discordClient,
             IServiceProvider services,
-            IOptions<MaraConfig> config,
             IHostApplicationLifetime applicationLifetime,
-            IHostEnvironment environment,
             ILogger<MaraBot> logger,
             PluginService pluginService
         )
@@ -41,58 +34,22 @@ namespace Mara.Runtime
             _discordClient = discordClient;
             _services = services;
             _applicationLifetime = applicationLifetime;
-            _environment = environment;
             _logger = logger;
             _pluginService = pluginService;
-            _config = config.Value;
         }
+
+        /// <inheritdoc />
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-us");
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
-            _logger.LogInformation("Starting bot service...");;
-
-            IServiceScope? scope = null;
-            try
+            var initResult = await InitializeAsync(stoppingToken);
+            if (!initResult.IsSuccess)
             {
-                // Create new scope for this session
-                scope = _services.CreateScope();
-
-                // Register the OnStopping method with the cancellation token
-                stoppingToken.Register(OnStopping);
-
-                // Load plugins
-                var plugins = _pluginService.LoadAvailablePlugins();
-
-                foreach (var plugin in plugins)
-                {
-                    if (plugin is ISkippedPlugin)
-                        continue;
-
-                    var serviceScope = _services.CreateScope();
-
-                    if (plugin is IMigratablePlugin migratablePlugin)
-                    {
-                        if (await migratablePlugin.HasCreatedPersistentStoreAsync(serviceScope.ServiceProvider))
-                        {
-                            await migratablePlugin.MigratePluginAsync(serviceScope.ServiceProvider);
-                        }
-                    }
-
-                    await plugin.InitializeAsync(serviceScope.ServiceProvider);
-                }
-
-                _scope = scope;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex, "An error occurred while attempting to start the background service.");
-
-                OnStopping();
-
-                throw;
-            }
+                _logger.LogError(initResult.Error);
+                return;
+            }            
 
             _logger.LogInformation("Logging into Discord and starting the client.");
 
@@ -101,23 +58,62 @@ namespace Mara.Runtime
             if (!runResult.IsSuccess)
             {
                 _logger.LogCritical("A critical error has occurred: {Error}", runResult.Error!.Message);
-            }
+            }            
+        }
 
-            void OnStopping()
+        private async Task<Result> InitializeAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation("Initializing bot service...");
+            
+            try
             {
-                _logger.LogInformation("Stopping background service.");
-                try
+                // Create new scope for this session
+                _scope = _services.CreateScope();
+
+                // Register the OnStopping method with the cancellation token
+                stoppingToken.Register(OnStopping);
+
+                // Load plugins
+                var pluginTree = _pluginService.LoadPluginTree();
+
+                var initResult = await pluginTree.InitializeAsync(_scope.ServiceProvider, stoppingToken);
+                if (!initResult.IsSuccess)
                 {
-                    _applicationLifetime.StopApplication();
+                    return initResult;
                 }
-                finally
+
+                var migrateResult = await pluginTree.MigrateAsync(_scope.ServiceProvider, stoppingToken);
+                if (migrateResult.IsSuccess)
                 {
-                    scope?.Dispose();
-                    _scope = null;
+                    return migrateResult;
                 }
+
+                return Result.FromSuccess();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "An error occurred while attempting to start the background service.");
+
+                OnStopping();
+
+                return ex;
             }
         }
 
+        private void OnStopping()
+        {
+            _logger.LogInformation("Stopping background service.");
+            try
+            {
+                _applicationLifetime.StopApplication();
+            }
+            finally
+            {
+                _scope = null;
+            }
+        }
+
+        /// <inheritdoc />
         public override void Dispose()
         {
             try

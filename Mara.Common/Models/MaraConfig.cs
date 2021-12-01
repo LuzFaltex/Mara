@@ -2,7 +2,7 @@
 
 namespace Mara.Common.Models
 {
-    public class MaraConfig
+    public sealed class MaraConfig
     {
         public static readonly MaraConfig Default = new()
         {
@@ -11,8 +11,8 @@ namespace Mara.Common.Models
             PrivacyPolicyUrl = ""
         };
 
-        public string DiscordToken { get; init; }
-        public Dictionary<string, string> ConnectionStrings { get; init; }
-        public string PrivacyPolicyUrl { get; init; }
+        public string DiscordToken { get; init; } = "";
+        public Dictionary<string, string> ConnectionStrings { get; init; } = new();
+        public string PrivacyPolicyUrl { get; init; } = "";
     }
 }

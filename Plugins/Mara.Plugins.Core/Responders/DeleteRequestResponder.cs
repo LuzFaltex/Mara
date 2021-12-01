@@ -12,16 +12,16 @@ using Remora.Results;
 
 namespace Mara.Plugins.Core.Responders
 {
-    public sealed class MessageDeleteResponder : IResponder<MessageReactionAdd>
+    public sealed class DeleteRequestResponder : IResponder<MessageReactionAdd>
     {
         private readonly DiscordRestChannelAPI _channelApi;
 
-        public MessageDeleteResponder(DiscordRestChannelAPI channelApi)
+        public DeleteRequestResponder(DiscordRestChannelAPI channelApi)
         {
             _channelApi = channelApi;
         }
 
-        public async Task<Result> RespondAsync(MessageReactionAdd gatewayEvent, CancellationToken cancellationToken = new CancellationToken())
+        public async Task<Result> RespondAsync(MessageReactionAdd gatewayEvent, CancellationToken cancellationToken = default)
         {
             // If the reaction wasn't ❌, skip.
             if (!gatewayEvent.Emoji.Name.Equals("❌"))
